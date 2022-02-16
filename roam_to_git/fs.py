@@ -82,11 +82,10 @@ def save_markdown_notes(directory: Path, contents: Dict[str, str]):
 
 
 def note_filename(filename: str):
-    file_hash = sha1(filename.encode("utf-8")).hexdigest()[:6]
     filename = filename.lower()
     filename = re.sub(r" ", r"-", filename)
     filename = re.sub(r"[*#?]", r"-", filename)
-    filename = f"{filename[:-3]}-{file_hash}.md"
+    filename = f"{filename[:-3]}.md"
     return filename
 
 
