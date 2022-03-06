@@ -86,7 +86,7 @@ def get_allowed_notes(dir: Path) -> List[str]:
             if os.path.isfile(file):
                 with open(file) as f:
                     for line in f:
-                        match = re.match(r".*#Public", line)
+                        match = re.match(r".*#public", line)
                         if match:
                             note_title = file.split('/')[-1][:-3]
                             allowed_notes.append(note_title)
