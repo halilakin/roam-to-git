@@ -6,26 +6,30 @@ import tempfile
 import time
 from pathlib import Path
 
-import git
+# import git
 from dotenv import load_dotenv
 from loguru import logger
 
-from roam_to_git.formatter import (
-    read_markdown_directory,
-    format_markdown,
-    format_markdown_notes,
-    get_allowed_notes,
-)
-from roam_to_git.fs import (
-    reset_git_directory,
-    unzip_markdown_archive,
-    unzip_and_save_json_archive,
-    commit_git_directory,
-    push_git_repository,
-    save_markdowns,
-    save_markdown_notes,
-)
-from roam_to_git.scrapping import patch_pyppeteer, scrap, Config
+from formatter import *
+from fs import *
+from scrapping import *
+
+# from roam_to_git.formatter import (
+#     read_markdown_directory,
+#     format_markdown,
+#     format_markdown_notes,
+#     get_allowed_notes,
+# )
+# from roam_to_git.fs import (
+#     reset_git_directory,
+#     unzip_markdown_archive,
+#     unzip_and_save_json_archive,
+#     commit_git_directory,
+#     push_git_repository,
+#     save_markdowns,
+#     save_markdown_notes,
+# )
+# from roam_to_git.scrapping import patch_pyppeteer, scrap, Config
 
 
 @logger.catch(reraise=True)
@@ -99,12 +103,6 @@ def main():
         sleep_duration=float(args.sleep_duration),
     )
 
-    if args.skip_git:
-        repo = None
-    else:
-        repo = git.Repo(git_path)
-        assert not repo.bare  # Fail fast if it's not a repo
-
     reset_git_directory(git_path / "formatted")
     reset_git_directory(git_path / "_notes")
     if not args.skip_fetch:
@@ -134,11 +132,6 @@ def main():
         allowed_notes,
     )
     save_markdown_notes(git_path / "_notes", formatted_notes)
-
-    if repo is not None:
-        commit_git_directory(repo)
-        if not args.skip_push:
-            push_git_repository(repo)
 
 
 if __name__ == "__main__":

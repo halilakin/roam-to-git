@@ -1,10 +1,11 @@
+import glob
 import os
 import re
 from collections import defaultdict
 from itertools import takewhile
 from pathlib import Path
 from typing import Dict, List, Match, Tuple
-from roam_to_git.fs import note_filename
+from fs import note_filename
 
 
 def read_markdown_directory(raw_directory: Path) -> Dict[str, str]:
@@ -80,13 +81,15 @@ def get_allowed_notes(dir: Path) -> List[str]:
     allowed_notes = []
     dirs_to_check = [dir] + [Path(f.path) for f in os.scandir(dir) if f.is_dir()]
     for dir in dirs_to_check:
-        if (dir / "Public.md").exists():
-            with open(dir / "Public.md") as f:
-                for line in f:
-                    match = re.match(r"- \[\[(.*)\]\]", line)
-                    if match:
-                        note_title = match.group(1)
-                        allowed_notes.append(note_title)
+        files = glob.glob(str(dir)+"/*")
+        for file in files:
+            if os.path.isfile(file):
+                with open(file) as f:
+                    for line in f:
+                        match = re.match(r".*#Public", line)
+                        if match:
+                            note_title = file.split('/')[-1][:-3]
+                            allowed_notes.append(note_title)
 
     return allowed_notes
 
