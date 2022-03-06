@@ -5,7 +5,7 @@ from collections import defaultdict
 from itertools import takewhile
 from pathlib import Path
 from typing import Dict, List, Match, Tuple
-from fs import note_filename
+from roam_to_git.fs import note_filename
 
 
 def read_markdown_directory(raw_directory: Path) -> Dict[str, str]:
