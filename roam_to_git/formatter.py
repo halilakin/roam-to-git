@@ -58,7 +58,7 @@ def fix_triple_backticks(content: str) -> str:
     return re.sub(r"- ```", r"\n```", content)
 
 
-def format_markdown(contents: Dict[str, str]) -> Dict[str, str]:
+def format_markdown(contents: Dict[str, str], allowed_notes: List[str]) -> Dict[str, str]:    back_links = get_back_links(contents)
     back_links = get_back_links(contents)
     # Format and write the markdown files
     out = {}
@@ -70,7 +70,7 @@ def format_markdown(contents: Dict[str, str]) -> Dict[str, str]:
         # Format content. Backlinks content will be formatted automatically.
         content = format_to_do(content)
         link_prefix = "../" * sum("/" in char for char in file_name)
-        content = format_link(content, link_prefix=link_prefix)
+        content = format_link(content, allowed_notes, link_prefix=link_prefix)
         if len(content) > 0:
             out[file_name] = content
 
@@ -128,7 +128,7 @@ def format_markdown_notes(
                 content = format_to_do(content)
                 content = process_hyperlinks(content)
                 link_prefix = "../" * sum("/" in char for char in file_name)
-                content = format_link(content, link_prefix=link_prefix)
+                content = format_link(content, allowed_notes, link_prefix=link_prefix)
                 content = convert_links(content)
                 if len(content) > 0:
                     out[file_name] = content
@@ -246,7 +246,7 @@ def convert_links(line: str):
     return line
 
 
-def format_link(string: str, link_prefix="") -> str:
+def format_link(string: str, allowed_notes: List[str], link_prefix="") -> str:
     """Transform a RoamResearch-like link to a Markdown link.
 
     @param link_prefix: Add the given prefix before all links.
@@ -281,4 +281,9 @@ def format_link(string: str, link_prefix="") -> str:
         string,
         flags=re.MULTILINE,
     )
+
+    for link in re.findall(r'<[^>]*\.md>', string):
+        if link[1:-4] not in allowed_notes:
+            print(f"{link} not allowed")
+            string = string.replace(link, "")
     return string

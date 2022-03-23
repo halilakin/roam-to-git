@@ -123,9 +123,9 @@ def main():
             save_markdowns(git_path / "markdown", raws)
             unzip_and_save_json_archive(json_zip_path, git_path / "json")
 
-    formatted = format_markdown(read_markdown_directory(git_path / "markdown"))
-    save_markdowns(git_path / "formatted", formatted)
     allowed_notes = get_allowed_notes(git_path / "markdown")
+    formatted = format_markdown(read_markdown_directory(git_path / "markdown"), allowed_notes)
+    save_markdowns(git_path / "formatted", formatted)
     formatted_notes = format_markdown_notes(
         read_markdown_directory(git_path / "markdown"),
         git_path / "markdown",
