@@ -58,7 +58,7 @@ def fix_triple_backticks(content: str) -> str:
     return re.sub(r"- ```", r"\n```", content)
 
 
-def format_markdown(contents: Dict[str, str], allowed_notes: List[str]) -> Dict[str, str]:    back_links = get_back_links(contents)
+def format_markdown(contents: Dict[str, str], allowed_notes: List[str]) -> Dict[str, str]:
     back_links = get_back_links(contents)
     # Format and write the markdown files
     out = {}
